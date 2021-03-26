@@ -65,7 +65,7 @@ def drawPieces(gameBoard,black,red):
                 pygame.draw.circle(screen,blue,(xCoordinate,yCoordinate),radius)
                 # Draw a white outline around edge of black pieces so they are visible
                 # when placed on black game board squares.
-                pygame.draw.circle(screen,white,(xCoordinate,yCoordinate),radius, 1)
+                pygame.draw.circle(screen,blue,(xCoordinate,yCoordinate),radius, 1)
             if gameBoard[x][y]=="KingBlack":
                 pygame.draw.circle(screen,blue,(xCoordinate,yCoordinate),radius)
                 #-----put letter k in the middle-----#
