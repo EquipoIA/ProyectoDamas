@@ -11,8 +11,10 @@ class Jugador(object):
         self.color = color
         self.nivel = nivel #profundidad de busqueda
 
-global jugador1 = Jugador('persona','r',2)
-global jugador2 = Jugador('ia','n',3)
+global jugador1
+jugador1 = Jugador('persona','r',2)
+global jugador2
+jugador2 = Jugador('ia','n',3)
 
 def tablero_inicial():
     tablero = [
@@ -135,7 +137,7 @@ def mover_pieza(posInic,posFinal,tablero):
     
     #checar si capturamos una ficha para eliminarla
     if (posInic[0]-posFinal[0])%2==0:
-        tablero[(posInic[0]+posFinal[0])/2][(posInic[1]+posFinal[1])/2] = 0 
+        tablero[int((posInic[0]+posFinal[0])/2)][int((posInic[1]+posFinal[1])/2)] = 0 
 
 
 def heuristica(tablero, jugador):
@@ -167,7 +169,7 @@ def perdio_juego(tablero,jugador):
 
 def negamax(tablero,nivel,jugador,alpha,beta):
     global mejor_movimiento
-    if nivel==0 or perdio_juego(jugador1) or perdio_juego(jugador2):
+    if nivel==0 or perdio_juego(tablero,jugador1) or perdio_juego(tablero,jugador2):
         return heuristica(tablero,jugador)
     movimientos = movimientos_posibles(tablero,jugador)
     for i in range(len(movimientos)):
@@ -177,23 +179,25 @@ def negamax(tablero,nivel,jugador,alpha,beta):
             jugador = jugador2
         else:
             jugador = jugador1
-        valor_temp = -negamax(copia_tablero,nivel-1,-beta,-alpha,jugador)
-        if valor_temp > alpha:
-            if nivel=0:
+        valor_temp = -negamax(copia_tablero,nivel-1,jugador,-beta,-alpha)
+        if valor_temp >= alpha:
+            if nivel==0:
                 mejor_movimiento = (movimientos[i][0],movimientos[i][1]),(movimientos[i][2],movimientos[i][3])
             alpha = valor_temp
         if alpha >= beta:
             break
     return alpha
 
-
+def jugada_IA(tablero, jugador):
+    alpha = negamax(tablero,jugador.nivel,jugador,-10000,+10000)
+    print(alpha)
+    if alpha != -10000:
+        mover_pieza(mejor_movimiento[0],mejor_movimiento[1],tablero)
 
 
 #pruebas
 t = tablero_inicial()
-imprime_tablero(t)
-mover_pieza([5,0],[4,1],t)
-imprime_tablero(t)
 
-print(movimientos_posibles(t,jugador1))
-print(heuristica(t,jugador1))
+
+jugada_IA(t,jugador2)
+imprime_tablero(t)
