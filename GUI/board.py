@@ -1,97 +1,150 @@
 import pygame
+from .constants import *
+from .piece import Piece
 
-newGame=True
-loggedIn=False
-miniGame=False
+class Board:
+    def __init__(self):
+        self.board = []
+        self.red_left = self.white_left = 12
+        self.red_kings = self.white_kings = 0
+        self.create_board()
+    
+    def draw_squares(self, win):
+        win.fill(BLACK)
+        for row in range(ROWS):
+            for col in range(row % 2, COLS, 2):
+                pygame.draw.rect(win, WHITE, (row*SQUARE_SIZE, col *SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
-black=(0,0,0)
-blue=(60, 39, 173)
-white=(255,255,255)
-red=(255,0,0)
-greyBackground=(203, 206, 203)
+    def move(self, piece, row, col):
+        self.board[piece.row][piece.col], self.board[row][col] = self.board[row][col], self.board[piece.row][piece.col]
+        piece.move(row, col)
 
-# This sets the WIDTH and HEIGHT of each grid location
-width=65
-height=65
-radius=30
+        if row == ROWS - 1 or row == 0:
+            piece.make_king()
+            if piece.color == WHITE:
+                self.white_kings += 1
+            else:
+                self.red_kings += 1 
 
-margin=0# This sets the margin between each cell
-xDistanceFromEdge=220
-gameBoard=[[None]*8 for _ in range(8)]  # Proper initialization.
-windowSize=[960, 640]
+    def get_piece(self, row, col):
+        return self.board[row][col]
 
-pygame.init()
-screen = pygame.display.set_mode(windowSize)
-pygame.display.set_caption("Draughts Game")
-done = False
-clock = pygame.time.Clock()
+    def create_board(self):
+        for row in range(ROWS):
+            self.board.append([])
+            for col in range(COLS):
+                if col % 2 == ((row +  1) % 2):
+                    if row < 3:
+                        self.board[row].append(Piece(row, col, BLUE))
+                    elif row > 4:
+                        self.board[row].append(Piece(row, col, RED))
+                    else:
+                        self.board[row].append(0)
+                else:
+                    self.board[row].append(0)
+        
+    def draw(self, win):
+        self.draw_squares(win)
+        for row in range(ROWS):
+            for col in range(COLS):
+                piece = self.board[row][col]
+                if piece != 0:
+                    piece.draw(win)
 
-# Added helper function.
-def square_colour(row, col):
-    """ Determine colour of game board square from its position. """
-    return white if (row + col) % 2 == 0 else black  # Makes upper-left corner white.
+    def remove(self, pieces):
+        for piece in pieces:
+            self.board[piece.row][piece.col] = 0
+            if piece != 0:
+                if piece.color == RED:
+                    self.red_left -= 1
+                else:
+                    self.white_left -= 1
+    
+    def winner(self):
+        if self.red_left <= 0:
+            return WHITE
+        elif self.white_left <= 0:
+            return RED
+        
+        return None 
+    
+    def get_valid_moves(self, piece):
+        moves = {}
+        left = piece.col - 1
+        right = piece.col + 1
+        row = piece.row
 
-def boardGui(black,white):
-    for boardRow in range(8):
-        for boardColumn in range(8):
-            xCoordinate=((margin+width) * boardColumn + margin)+xDistanceFromEdge
-            yCoordinate=(margin+height) * boardRow + margin
-            currentColour = square_colour(boardRow, boardColumn)
-            pygame.draw.rect(screen,currentColour,[xCoordinate,yCoordinate, width, height])
+        if piece.color == RED or piece.king:
+            moves.update(self._traverse_left(row -1, max(row-3, -1), -1, piece.color, left))
+            moves.update(self._traverse_right(row -1, max(row-3, -1), -1, piece.color, right))
+        if piece.color == WHITE or piece.king:
+            moves.update(self._traverse_left(row +1, min(row+3, ROWS), 1, piece.color, left))
+            moves.update(self._traverse_right(row +1, min(row+3, ROWS), 1, piece.color, right))
+    
+        return moves
 
-def piecesGameBoard(gameBoard):
-    if newGame:
-        newGameBoard(gameBoard)
+    def _traverse_left(self, start, stop, step, color, left, skipped=[]):
+        moves = {}
+        last = []
+        for r in range(start, stop, step):
+            if left < 0:
+                break
+            
+            current = self.board[r][left]
+            if current == 0:
+                if skipped and not last:
+                    break
+                elif skipped:
+                    moves[(r, left)] = last + skipped
+                else:
+                    moves[(r, left)] = last
+                
+                if last:
+                    if step == -1:
+                        row = max(r-3, 0)
+                    else:
+                        row = min(r+3, ROWS)
+                    moves.update(self._traverse_left(r+step, row, step, color, left-1,skipped=last))
+                    moves.update(self._traverse_right(r+step, row, step, color, left+1,skipped=last))
+                break
+            elif current.color == color:
+                break
+            else:
+                last = [current]
 
-def newGameBoard(gameBoard):
-    gameBoard[:] = [[None]*8 for _ in range(8)]  # Empty the game board.
+            left -= 1
+        
+        return moves
 
-    for x in range(8):
-        for y in range(8):
-            if square_colour(x, y) == black:
-                if y in range(3):
-                    gameBoard[x][y]="NormalBlack"
-                if y in range(5,8):
-                    gameBoard[x][y]="NormalRed"
+    def _traverse_right(self, start, stop, step, color, right, skipped=[]):
+        moves = {}
+        last = []
+        for r in range(start, stop, step):
+            if right >= COLS:
+                break
+            
+            current = self.board[r][right]
+            if current == 0:
+                if skipped and not last:
+                    break
+                elif skipped:
+                    moves[(r,right)] = last + skipped
+                else:
+                    moves[(r, right)] = last
+                
+                if last:
+                    if step == -1:
+                        row = max(r-3, 0)
+                    else:
+                        row = min(r+3, ROWS)
+                    moves.update(self._traverse_left(r+step, row, step, color, right-1,skipped=last))
+                    moves.update(self._traverse_right(r+step, row, step, color, right+1,skipped=last))
+                break
+            elif current.color == color:
+                break
+            else:
+                last = [current]
 
-    drawPieces(gameBoard,black,red)
-
-def drawPieces(gameBoard,black,red):
-    for x in range(8):
-        for y in range(8):
-            xCoordinate=((margin+width) * x + margin+32)+xDistanceFromEdge
-            yCoordinate=(margin+height) * y + margin+33
-            if gameBoard[x][y]=="NormalBlack":
-                pygame.draw.circle(screen,blue,(xCoordinate,yCoordinate),radius)
-                # Draw a white outline around edge of black pieces so they are visible
-                # when placed on black game board squares.
-                pygame.draw.circle(screen,blue,(xCoordinate,yCoordinate),radius, 1)
-            if gameBoard[x][y]=="KingBlack":
-                pygame.draw.circle(screen,blue,(xCoordinate,yCoordinate),radius)
-                #-----put letter k in the middle-----#
-            if gameBoard[x][y]=="NormalRed":
-                pygame.draw.circle(screen,red,(xCoordinate,yCoordinate),radius)
-            if gameBoard[x][y]=="KingRed":
-                pygame.draw.circle(screen,red,(xCoordinate,yCoordinate),radius)
-                #----put letter k in the middle---#
-
-# -------- Main Program Loop -----------
-while not done:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            done = True
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-
-            pos = pygame.mouse.get_pos()
-
-            # Change the x/y screen coordinates to grid coordinates
-            column = (pos[0]-xDistanceFromEdge) // (width+margin)
-            row = pos[1] // (height+margin)
-
-    screen.fill(greyBackground)
-    boardGui(black,white)
-    piecesGameBoard(gameBoard)
-    clock.tick(60)
-    pygame.display.flip()
-
-pygame.quit()
+            right += 1
+        
+        return moves
