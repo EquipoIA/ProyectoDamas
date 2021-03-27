@@ -118,10 +118,22 @@ def puede_moverse(posInic,posFinal,tablero):
         if posFinal[0]<posInic[0]:
             return False
         return True
-
+#hacer el movimiento en el tablero 
 def mover_pieza(posInic,posFinal,tablero):
     tablero[posFinal[0]][posFinal[1]] = tablero[posInic[0]][posInic[1]]
     tablero[posInic[0]][posInic[1]] = 0
+
+    #checar si la pieza movida se convierte en rey
+    if posFinal[0]==0 and tablero[posFinal[0]][posFinal[1]].color =='r':
+        tablero[posFinal[0]][posFinal[1]].rey = True
+    if posFinal[0]==7 and tablero[posFinal[0]][posFinal[1]].color =='n':
+        tablero[posFinal[0]][posFinal[1]].rey = True
+    
+    #checar si capturamos una ficha para eliminarla
+    if (posInic[0]-posFinal[0])%2==0:
+        tablero[(posInic[0]+posFinal[0])/2][(posInic[1]+posFinal[1])/2] = 0 
+
+
 
 
 
