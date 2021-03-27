@@ -5,8 +5,8 @@ from .piece import Piece
 class Board:
     def __init__(self):
         self.board = []
-        self.red_left = self.white_left = 12
-        self.red_kings = self.white_kings = 0
+        self.red_left = self.blue_left = 12
+        self.red_kings = self.blue_kings = 0
         self.create_board()
     
     def draw_squares(self, win):
@@ -16,13 +16,14 @@ class Board:
                 pygame.draw.rect(win, WHITE, (row*SQUARE_SIZE, col *SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
     def move(self, piece, row, col):
+        #Swappeamos los valores para que parezca un movimiento
         self.board[piece.row][piece.col], self.board[row][col] = self.board[row][col], self.board[piece.row][piece.col]
         piece.move(row, col)
-
+        #si llega al final del tablero crea a un rey
         if row == ROWS - 1 or row == 0:
             piece.make_king()
-            if piece.color == WHITE:
-                self.white_kings += 1
+            if piece.color == BLUE:
+                self.blue_kings += 1
             else:
                 self.red_kings += 1 
 
@@ -58,12 +59,12 @@ class Board:
                 if piece.color == RED:
                     self.red_left -= 1
                 else:
-                    self.white_left -= 1
+                    self.blue_left -= 1
     
     def winner(self):
         if self.red_left <= 0:
-            return WHITE
-        elif self.white_left <= 0:
+            return BLUE
+        elif self.blue_left <= 0:
             return RED
         
         return None 
@@ -77,7 +78,7 @@ class Board:
         if piece.color == RED or piece.king:
             moves.update(self._traverse_left(row -1, max(row-3, -1), -1, piece.color, left))
             moves.update(self._traverse_right(row -1, max(row-3, -1), -1, piece.color, right))
-        if piece.color == WHITE or piece.king:
+        if piece.color == BLUE or piece.king:
             moves.update(self._traverse_left(row +1, min(row+3, ROWS), 1, piece.color, left))
             moves.update(self._traverse_right(row +1, min(row+3, ROWS), 1, piece.color, right))
     
@@ -148,3 +149,4 @@ class Board:
             right += 1
         
         return moves
+    

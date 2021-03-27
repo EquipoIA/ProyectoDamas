@@ -14,5 +14,4 @@ LIGHTBLUE = (80,184,231)
 LIGHTRED = (255,82,82)
 GREY = (128,128,128)
 
-
-CROWN = 0
+CROWN = pygame.transform.scale(pygame.image.load("GUI/assets/crown.png"),(45,25))
