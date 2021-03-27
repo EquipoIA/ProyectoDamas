@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 class Pieza(object):
     def __init__(self, color, rey=False):
         self.color = color
@@ -9,6 +11,8 @@ class Jugador(object):
         self.color = color
         self.nivel = nivel #profundidad de busqueda
 
+global jugador1 = Jugador('persona','r',2)
+global jugador2 = Jugador('ia','n',3)
 
 def tablero_inicial():
     tablero = [
@@ -134,6 +138,54 @@ def mover_pieza(posInic,posFinal,tablero):
         tablero[(posInic[0]+posFinal[0])/2][(posInic[1]+posFinal[1])/2] = 0 
 
 
+def heuristica(tablero, jugador):
+    valor = 0
+    for i in range(8):
+        for j in range(8):
+            pos = tablero[i][j]
+            if pos != 0:
+                if pos.color == jugador.color:
+                    if pos.rey:
+                        valor += 2
+                    else:
+                        valor += 1
+                else:
+                    if pos.rey:
+                        valor -= 2
+                    else:
+                        valor -= 1
+    return valor
+
+def perdio_juego(tablero,jugador):
+    if len(movimientos_posibles(t,jugador)) != 0:
+        return False
+    for i in range(8):
+        for j in range(8):
+            if tablero[i][j] != 0 and tablero[i][j].color == jugador.color:
+                return False
+    return True
+
+def negamax(tablero,nivel,jugador,alpha,beta):
+    global mejor_movimiento
+    if nivel==0 or perdio_juego(jugador1) or perdio_juego(jugador2):
+        return heuristica(tablero,jugador)
+    movimientos = movimientos_posibles(tablero,jugador)
+    for i in range(len(movimientos)):
+        copia_tablero = deepcopy(tablero)
+        mover_pieza((movimientos[i][0],movimientos[i][1]),(movimientos[i][2],movimientos[i][3]),copia_tablero)
+        if jugador == jugador1:
+            jugador = jugador2
+        else:
+            jugador = jugador1
+        valor_temp = -negamax(copia_tablero,nivel-1,-beta,-alpha,jugador)
+        if valor_temp > alpha:
+            if nivel=0:
+                mejor_movimiento = (movimientos[i][0],movimientos[i][1]),(movimientos[i][2],movimientos[i][3])
+            alpha = valor_temp
+        if alpha >= beta:
+            break
+    return alpha
+
 
 
 
@@ -142,5 +194,6 @@ t = tablero_inicial()
 imprime_tablero(t)
 mover_pieza([5,0],[4,1],t)
 imprime_tablero(t)
-jugador1 = Jugador('persona','r',2)
+
 print(movimientos_posibles(t,jugador1))
+print(heuristica(t,jugador1))
