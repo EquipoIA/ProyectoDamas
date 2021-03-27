@@ -7,7 +7,7 @@ class Board:
         self.board = []
         self.red_left = self.blue_left = 12
         self.red_kings = self.blue_kings = 0
-        self.create_board()
+        self.create_board() 
     
     def draw_squares(self, win):
         win.fill(BLACK)
@@ -16,10 +16,9 @@ class Board:
                 pygame.draw.rect(win, WHITE, (row*SQUARE_SIZE, col *SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
     def move(self, piece, row, col):
-        #Swappeamos los valores para que parezca un movimiento
         self.board[piece.row][piece.col], self.board[row][col] = self.board[row][col], self.board[piece.row][piece.col]
         piece.move(row, col)
-        #si llega al final del tablero crea a un rey
+
         if row == ROWS - 1 or row == 0:
             piece.make_king()
             if piece.color == BLUE:
@@ -149,4 +148,3 @@ class Board:
             right += 1
         
         return moves
-    
