@@ -12,7 +12,7 @@ class Jugador(object):
         self.nivel = nivel #profundidad de busqueda
 
 global jugador1
-jugador1 = Jugador('persona','r',2)
+jugador1 = Jugador('persona','r',3)
 global jugador2
 jugador2 = Jugador('ia','n',3)
 
@@ -41,7 +41,7 @@ def imprime_tablero(tablero):
     for i in range(8):
         for j in range(8):
             if(tablero[i][j]==0):
-                print("0", end=" ")
+                print(".", end=" ")
             else:
                 print(tablero[i][j].color, end=" ")
         print("\n")
@@ -168,8 +168,9 @@ def perdio_juego(tablero,jugador):
     return True
 
 def negamax(tablero,nivel,jugador,alpha,beta):
-    global mejor_movimiento
-    if nivel==0 or perdio_juego(tablero,jugador1) or perdio_juego(tablero,jugador2):
+    global mejor_movimiento 
+    mejor_movimiento = [0]
+    if nivel >= jugador.nivel or perdio_juego(tablero,jugador1) or perdio_juego(tablero,jugador2):
         return heuristica(tablero,jugador)
     movimientos = movimientos_posibles(tablero,jugador)
     for i in range(len(movimientos)):
@@ -179,7 +180,7 @@ def negamax(tablero,nivel,jugador,alpha,beta):
             jugador = jugador2
         else:
             jugador = jugador1
-        valor_temp = -negamax(copia_tablero,nivel-1,jugador,-beta,-alpha)
+        valor_temp = -negamax(copia_tablero,nivel+1,jugador,-beta,-alpha)
         if valor_temp >= alpha:
             if nivel==0:
                 mejor_movimiento = (movimientos[i][0],movimientos[i][1]),(movimientos[i][2],movimientos[i][3])
@@ -189,9 +190,10 @@ def negamax(tablero,nivel,jugador,alpha,beta):
     return alpha
 
 def jugada_IA(tablero, jugador):
-    alpha = negamax(tablero,jugador.nivel,jugador,-10000,+10000)
+    alpha = negamax(tablero,0,jugador,-10000,+10000)
     print(alpha)
     if alpha != -10000:
+        print(mejor_movimiento)
         mover_pieza(mejor_movimiento[0],mejor_movimiento[1],tablero)
 
 
@@ -201,3 +203,25 @@ t = tablero_inicial()
 
 jugada_IA(t,jugador2)
 imprime_tablero(t)
+print('---------------')
+jugada_IA(t,jugador1)
+imprime_tablero(t)
+print('---------------')
+jugada_IA(t,jugador2)
+imprime_tablero(t)
+print('---------------')
+jugada_IA(t,jugador1)
+imprime_tablero(t)
+print('---------------')
+jugada_IA(t,jugador2)
+imprime_tablero(t)
+print('---------------')
+jugada_IA(t,jugador1)
+imprime_tablero(t)
+print('---------------')
+jugada_IA(t,jugador2)
+imprime_tablero(t)
+print('---------------')
+jugada_IA(t,jugador1)
+imprime_tablero(t)
+print('---------------')
