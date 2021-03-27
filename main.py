@@ -40,6 +40,7 @@ def imprime_tablero(tablero):
                 print(tablero[i][j].color, end=" ")
         print("\n")
 
+#Define los movimientos posibles que puede hacer un jugador dado un tablero
 def movimientos_posibles(tablero, jugador):
     movimientos = []
     for m in range(8):
@@ -53,14 +54,25 @@ def movimientos_posibles(tablero, jugador):
                      movimientos.append([m, n, m+2, n-2])
                 if puede_capturar([m, n], [m-1, n-1], [m-2, n-2], tablero) == True:
                      movimientos.append([m, n, m-2, n-2])
-
-
+    #si en ningun movimiento puede capturar al oponente, se mueve normalmente
+    if len(movimientos)==0:
+        for m in range(8):
+            for n in range(8):
+                if tablero[m][n] != 0 and tablero[m][n].color == jugador.color:
+                    if puede_moverse([m, n], [m+1, n+1], tablero) == True: 
+                        movimientos.append([m, n, m+1, n+1])
+                    if puede_moverse([m, n], [m-1, n+1], tablero) == True: 
+                        movimientos.append([m, n, m-1, n+1])
+                    if puede_moverse([m, n], [m+1, n-1], tablero) == True: 
+                        movimientos.append([m, n, m+1, n-1])
+                    if puede_moverse([m, n], [m-1, n-1], tablero) == True: 
+                        movimientos.append([m, n, m-1, n-1])
     return movimientos
 
 
-def puede_capturar(tablero,posInic,posInter,posFinal):
+def puede_capturar(posInic,posInter,posFinal,tablero):
     pieza_inic = tablero[posInic[0]][posInic[1]]
-    pieza_inter = tablero[posInter[0]][posInter[1]]
+    
     #revisar si la posFinal es valida
     if posFinal[0] < 0 or posFinal[0] > 7 or posFinal[1] < 0 or posFinal[1] > 7:
         return False
@@ -68,6 +80,7 @@ def puede_capturar(tablero,posInic,posInter,posFinal):
     if tablero[posFinal[0]][posFinal[1]]!=0:
         return False
     #revisar si la posInter tiene una ficha
+    pieza_inter = tablero[posInter[0]][posInter[1]]
     if pieza_inter==0:
         return False
     #Si la pieza inicial es roja, revisar si puede capturar
@@ -85,3 +98,37 @@ def puede_capturar(tablero,posInic,posInter,posFinal):
         return True
 
 def puede_moverse(posInic,posFinal,tablero):
+    pieza_inic = tablero[posInic[0]][posInic[1]]
+    #revisar si la posFinal es valida
+    if posFinal[0] < 0 or posFinal[0] > 7 or posFinal[1] < 0 or posFinal[1] > 7:
+        return False
+    #revisar si posFinal esta vacia
+    if tablero[posFinal[0]][posFinal[1]] != 0:
+        return False
+    #Si la pieza es rey, entonces ya se puede mover sin restriccion
+    if pieza_inic.rey:
+        return True
+    #pieza roja
+    elif pieza_inic.color == 'r':
+        if posFinal[0]>posInic[0]:
+            return False
+        return True
+    #pieza negra
+    else:
+        if posFinal[0]<posInic[0]:
+            return False
+        return True
+
+def mover_pieza(posInic,posFinal,tablero):
+    tablero[posFinal[0]][posFinal[1]] = tablero[posInic[0]][posInic[1]]
+    tablero[posInic[0]][posInic[1]] = 0
+
+
+
+#pruebas
+t = tablero_inicial()
+imprime_tablero(t)
+mover_pieza([5,0],[4,1],t)
+imprime_tablero(t)
+jugador1 = Jugador('persona','r',2)
+print(movimientos_posibles(t,jugador1))
