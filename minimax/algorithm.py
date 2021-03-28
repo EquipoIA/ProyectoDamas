@@ -22,55 +22,55 @@ def heuristica(tablero, jugador):
                             valor -= 1
         return valor
 
-def minimaxRed(position, depth, max_player, game):
+def minimaxRed(position, depth, max_player,alpha,beta, game):
     if depth == 0 or position.winner() != None:
-        return heuristica(position, BLUE), position
+        return heuristica(position, RED), position
     
     if max_player:
-        maxEval = float('-inf')
         best_move = None
         for move in get_all_moves(position, RED, game):
-            evaluation = minimaxRed(move, depth-1, False, game)[0]
-            maxEval = max(maxEval, evaluation)
-            if maxEval == evaluation:
+            evaluation = minimaxBlue(move, depth-1, False,alpha, beta, game)[0]
+            if evaluation > alpha:
+                alpha = evaluation
                 best_move = move
-        
-        return maxEval, best_move
+            if alpha >= beta:
+                return alpha, best_move  
+        return alpha,best_move
     else:
-        minEval = float('inf')
         best_move = None
         for move in get_all_moves(position, BLUE, game):
-            evaluation = minimaxRed(move, depth-1, True, game)[0]
-            minEval = min(minEval, evaluation)
-            if minEval == evaluation:
+            evaluation = minimaxBlue(move, depth-1, True,alpha,beta, game)[0]
+            if evaluation < beta:
+                beta = evaluation
                 best_move = move
-        
-        return minEval, best_move
+            if alpha >= beta:
+                return beta,best_move   
+        return beta, best_move
 
-def minimaxBlue(position, depth, max_player, game):
+def minimaxBlue(position, depth, max_player,alpha,beta, game):
     if depth == 0 or position.winner() != None:
         return heuristica(position, BLUE), position
     
     if max_player:
-        maxEval = float('-inf')
         best_move = None
         for move in get_all_moves(position, BLUE, game):
-            evaluation = minimaxBlue(move, depth-1, False, game)[0]
-            maxEval = max(maxEval, evaluation)
-            if maxEval == evaluation:
+            evaluation = minimaxBlue(move, depth-1, False,alpha, beta, game)[0]
+            if evaluation > alpha:
+                alpha = evaluation
                 best_move = move
-        
-        return maxEval, best_move
+            if alpha >= beta:
+                return alpha, best_move  
+        return alpha,best_move
     else:
-        minEval = float('inf')
         best_move = None
         for move in get_all_moves(position, RED, game):
-            evaluation = minimaxBlue(move, depth-1, True, game)[0]
-            minEval = min(minEval, evaluation)
-            if minEval == evaluation:
+            evaluation = minimaxBlue(move, depth-1, True,alpha,beta, game)[0]
+            if evaluation < beta:
+                beta = evaluation
                 best_move = move
-        
-        return minEval, best_move
+            if alpha >= beta:
+                return beta,best_move   
+        return beta, best_move
 
 
 def simulate_move(piece, move, board, game, skip):

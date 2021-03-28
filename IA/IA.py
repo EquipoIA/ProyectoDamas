@@ -7,10 +7,6 @@ from GUI.piece import Piece
 BLUE = (60, 39, 173)
 RED = (255,0,0)
 
-global mejor_movimiento
-
-def getMejor_Movimiento():
-    return mejor_movimiento
 
 def heuristica(tablero, jugador):
         valor = 0
@@ -32,20 +28,22 @@ def heuristica(tablero, jugador):
 def negamax(tablero,nivel,jugador,alpha,beta,game):
         mejor_movimiento = None
         if nivel == 0 or tablero.winner()!=None:
-            return heuristica(tablero,jugador)
+            return heuristica(tablero,jugador),tablero
         for movimiento in movimientos_posibles(tablero,jugador,game):
             if jugador == BLUE:
                 jugador = RED
             else:
                 jugador = BLUE
-            valor_temp = -negamax(movimiento,nivel-1,jugador,-beta,-alpha,game)
+            valor_temp = negamax(movimiento,int(nivel)-1,jugador,-beta,-alpha,game)[0]
+            valor_temp = 0-valor_temp
             if valor_temp >= alpha:
                 if nivel==0:
                     mejor_movimiento = movimiento
                 alpha = valor_temp
             if alpha >= beta:
                 break
-        return alpha
+        return alpha,mejor_movimiento
+
 def draw_moves(game, board, piece):
     valid_moves = board.get_valid_moves(piece)
     board.draw(game.win)

@@ -23,13 +23,13 @@ def main():
         clock.tick(FPS)
 
         if game.turn == RED:
-            value, new_board = minimaxRed(game.get_board(), 4, RED, game)
+            value, new_board = minimaxRed(game.get_board(), 3, RED,float('-inf'),float('inf'), game)
             game.ai_move(new_board)
 
         elif game.turn == BLUE:
-            #value= negamax(game.get_board(), 4, BLUE,-10000,10000, game)
-            #new_board = getMejor_Movimiento()
-            value, new_board = minimaxBlue(game.get_board(), 4, BLUE, game)
+            #value, new_board = negamax(game.get_board(), 4, BLUE,-10000,10000, game)
+            
+            value, new_board = minimaxBlue(game.get_board(), 5, BLUE,float('-inf'),float('inf'), game)
             game.ai_move(new_board)
 
         if game.winner() != None:
