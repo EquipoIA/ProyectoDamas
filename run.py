@@ -1,6 +1,7 @@
 import pygame
 from GUI.constants import *
 from GUI.game import Game
+from IA.IA import *
 
 FPS = 60
 
@@ -20,6 +21,11 @@ def main():
 
     while run:
         clock.tick(FPS)
+
+        if game.turn == BLUE:
+            value= negamax(game.get_board(), 4, BLUE,-10000,10000, game)
+            new_board = getMejor_Movimiento()
+            game.ai_move(new_board)
 
         if game.winner() != None:
             print(game.winner())

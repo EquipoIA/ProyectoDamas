@@ -173,6 +173,7 @@ def negamax(tablero,nivel,jugador,alpha,beta):
     if nivel >= jugador.nivel or perdio_juego(tablero,jugador1) or perdio_juego(tablero,jugador2):
         return heuristica(tablero,jugador)
     movimientos = movimientos_posibles(tablero,jugador)
+    print(movimientos)
     for i in range(len(movimientos)):
         copia_tablero = deepcopy(tablero)
         mover_pieza((movimientos[i][0],movimientos[i][1]),(movimientos[i][2],movimientos[i][3]),copia_tablero)
@@ -199,10 +200,9 @@ def jugada_IA(tablero, jugador):
 
 #pruebas
 t = tablero_inicial()
-
-
 jugada_IA(t,jugador2)
 imprime_tablero(t)
+'''
 print('---------------')
 jugada_IA(t,jugador1)
 imprime_tablero(t)
@@ -225,3 +225,4 @@ print('---------------')
 jugada_IA(t,jugador1)
 imprime_tablero(t)
 print('---------------')
+'''

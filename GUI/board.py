@@ -29,6 +29,14 @@ class Board:
     def get_piece(self, row, col):
         return self.board[row][col]
 
+    def get_all_pieces(self, color):
+        pieces = []
+        for row in self.board:
+            for piece in row:
+                if piece != 0 and piece.color == color:
+                    pieces.append(piece)
+        return pieces
+
     def create_board(self):
         for row in range(ROWS):
             self.board.append([])
@@ -80,8 +88,9 @@ class Board:
         if piece.color == BLUE or piece.king:
             moves.update(self._traverse_left(row +1, min(row+3, ROWS), 1, piece.color, left))
             moves.update(self._traverse_right(row +1, min(row+3, ROWS), 1, piece.color, right))
-    
+        print(moves)
         return moves
+
 
     def _traverse_left(self, start, stop, step, color, left, skipped=[]):
         moves = {}
