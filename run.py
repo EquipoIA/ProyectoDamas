@@ -2,6 +2,7 @@ import pygame
 from GUI.constants import *
 from GUI.game import Game
 from IA.IA import *
+from minimax.algorithm import minimax
 
 FPS = 60
 
@@ -23,8 +24,9 @@ def main():
         clock.tick(FPS)
 
         if game.turn == BLUE:
-            value= negamax(game.get_board(), 4, BLUE,-10000,10000, game)
-            new_board = getMejor_Movimiento()
+            #value= negamax(game.get_board(), 4, BLUE,-10000,10000, game)
+            #new_board = getMejor_Movimiento()
+            value, new_board = minimax(game.get_board(), 4, BLUE, game)
             game.ai_move(new_board)
 
         if game.winner() != None:

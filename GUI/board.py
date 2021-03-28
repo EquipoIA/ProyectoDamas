@@ -88,7 +88,7 @@ class Board:
         if piece.color == BLUE or piece.king:
             moves.update(self._traverse_left(row +1, min(row+3, ROWS), 1, piece.color, left))
             moves.update(self._traverse_right(row +1, min(row+3, ROWS), 1, piece.color, right))
-        print(moves)
+        #print(moves)
         return moves
 
 
