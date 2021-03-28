@@ -2,8 +2,7 @@ import pygame
 from GUI.constants import *
 from GUI.game import Game
 from IA.IA import *
-from minimax.algorithm import minimax
-
+from minimax.algorithm import *
 FPS = 60
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -23,10 +22,14 @@ def main():
     while run:
         clock.tick(FPS)
 
-        if game.turn == BLUE:
+        if game.turn == RED:
+            value, new_board = minimaxRed(game.get_board(), 4, RED, game)
+            game.ai_move(new_board)
+
+        elif game.turn == BLUE:
             #value= negamax(game.get_board(), 4, BLUE,-10000,10000, game)
             #new_board = getMejor_Movimiento()
-            value, new_board = minimax(game.get_board(), 4, BLUE, game)
+            value, new_board = minimaxBlue(game.get_board(), 4, BLUE, game)
             game.ai_move(new_board)
 
         if game.winner() != None:

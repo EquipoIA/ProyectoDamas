@@ -22,7 +22,32 @@ def heuristica(tablero, jugador):
                             valor -= 1
         return valor
 
-def minimax(position, depth, max_player, game):
+def minimaxRed(position, depth, max_player, game):
+    if depth == 0 or position.winner() != None:
+        return heuristica(position, BLUE), position
+    
+    if max_player:
+        maxEval = float('-inf')
+        best_move = None
+        for move in get_all_moves(position, RED, game):
+            evaluation = minimaxRed(move, depth-1, False, game)[0]
+            maxEval = max(maxEval, evaluation)
+            if maxEval == evaluation:
+                best_move = move
+        
+        return maxEval, best_move
+    else:
+        minEval = float('inf')
+        best_move = None
+        for move in get_all_moves(position, BLUE, game):
+            evaluation = minimaxRed(move, depth-1, True, game)[0]
+            minEval = min(minEval, evaluation)
+            if minEval == evaluation:
+                best_move = move
+        
+        return minEval, best_move
+
+def minimaxBlue(position, depth, max_player, game):
     if depth == 0 or position.winner() != None:
         return heuristica(position, BLUE), position
     
@@ -30,7 +55,7 @@ def minimax(position, depth, max_player, game):
         maxEval = float('-inf')
         best_move = None
         for move in get_all_moves(position, BLUE, game):
-            evaluation = minimax(move, depth-1, False, game)[0]
+            evaluation = minimaxBlue(move, depth-1, False, game)[0]
             maxEval = max(maxEval, evaluation)
             if maxEval == evaluation:
                 best_move = move
@@ -40,7 +65,7 @@ def minimax(position, depth, max_player, game):
         minEval = float('inf')
         best_move = None
         for move in get_all_moves(position, RED, game):
-            evaluation = minimax(move, depth-1, True, game)[0]
+            evaluation = minimaxBlue(move, depth-1, True, game)[0]
             minEval = min(minEval, evaluation)
             if minEval == evaluation:
                 best_move = move
