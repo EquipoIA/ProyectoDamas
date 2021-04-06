@@ -1,4 +1,6 @@
 import pygame
+import pyautogui
+
 from GUI.constants import *
 from GUI.game import Game
 from IA.IA import *
@@ -19,22 +21,28 @@ def main():
     clock = pygame.time.Clock()
     game = Game(WIN)
 
+    eleccion = pyautogui.confirm(text="Escoga nivel de dificultad",title="Dificultad",buttons=["Fácil","Medio","Difícil"])
+
+    if eleccion == "Fácil":
+        nivelProfundidad = 3
+    elif eleccion == "Medio":
+        nivelProfundidad = 4
+    else: 
+        nivelProfundidad = 5
+
+    print(nivelProfundidad)
+
     while run:
         clock.tick(FPS)
 
-        if game.turn == RED:
-            value, new_board = minimaxRed(game.get_board(), 3, RED,float('-inf'),float('inf'), game)
+        if game.turn == BLUE:
+            #value, new_board = negamax(game.get_board(), 4, BLUE,-10000,10000, game) 
+            value, new_board = minimaxBlue(game.get_board(), nivelProfundidad, BLUE,float('-inf'),float('inf'), game)
             game.ai_move(new_board)
 
-        elif game.turn == BLUE:
-            #value, new_board = negamax(game.get_board(), 4, BLUE,-10000,10000, game)
-            
-            value, new_board = minimaxBlue(game.get_board(), 5, BLUE,float('-inf'),float('inf'), game)
-            game.ai_move(new_board)
-
-        if game.winner() != None:
-            print(game.winner())
-            run = False
+        #elif game.turn == RED:
+        #   value, new_board = minimaxRed(game.get_board(), 3, RED,float('-inf'),float('inf'), game)
+        #   game.ai_move(new_board)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -46,6 +54,13 @@ def main():
                 game.select(row, col)
 
         game.update()
+
+        if game.winner() != None:
+            if game.winner() == BLUE:
+                pyautogui.alert(text="Las fichas AZULES ganan",title="Ganador",button="OK")
+            else:
+                pyautogui.alert(text="Las fichas ROJAS ganan",title="Ganador",button="OK")
+            run = False
     
     pygame.quit()
 
