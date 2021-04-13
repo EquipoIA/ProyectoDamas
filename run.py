@@ -24,11 +24,11 @@ def main():
     eleccion = pyautogui.confirm(text="Escoga nivel de dificultad",title="Dificultad",buttons=["Fácil","Medio","Difícil"])
 
     if eleccion == "Fácil":
-        nivelProfundidad = 3
+        nivelProfundidad = 2
     elif eleccion == "Medio":
-        nivelProfundidad = 4
+        nivelProfundidad = 3
     else: 
-        nivelProfundidad = 5
+        nivelProfundidad = 4
 
     print(nivelProfundidad)
 

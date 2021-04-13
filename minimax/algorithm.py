@@ -20,6 +20,12 @@ def heuristica(tablero, jugador):
                             valor -= 2
                         else:
                             valor -= 1
+                    if pos.color == RED:
+                        if j<=4:
+                            valor += 0.5
+                    else:
+                        if j>=3:
+                            valor += 0.5
         return valor
 
 def minimaxRed(position, depth, max_player,alpha,beta, game):
