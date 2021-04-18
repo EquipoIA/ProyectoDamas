@@ -45,7 +45,7 @@ class Board:
                     if row < 3:
                         self.board[row].append(Piece(row, col, BLUE))#si la fila es menor a 3 añadimos una ficha roja 
                     elif row > 4:
-                        self.board[row].append(Piece(row, col, RED)) #si la fila es mayor a 3 añadimos una ficha azul 
+                        self.board[row].append(Piece(row, col, RED)) #si la fila es mayor a 4 añadimos una ficha azul 
                     else:
                         self.board[row].append(0) #añadimos espacios vacios en la parte media del tablero 
                 else:
