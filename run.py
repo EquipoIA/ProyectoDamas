@@ -37,8 +37,11 @@ def main():
 
         if game.turn == BLUE:
             #value, new_board = negamax(game.get_board(), 4, BLUE,-10000,10000, game) 
-            value, new_board = minimaxBlue(game.get_board(), nivelProfundidad, BLUE,float('-inf'),float('inf'), game)
-            game.ai_move(new_board)
+            value, new_board = minimaxBlue(game.get_board(), nivelProfundidad, BLUE,float('-inf'),float('inf'))
+            if new_board != None:
+                game.ai_move(new_board)
+            else:
+                pyautogui.alert(text="Las fichas ROJAS ganan",title="Ganador",button="OK")
 
         #elif game.turn == RED:
         #   value, new_board = minimaxRed(game.get_board(), 3, RED,float('-inf'),float('inf'), game)
@@ -54,6 +57,12 @@ def main():
                 game.select(row, col)
 
         game.update()
+
+        #checar si red se quedo sin movimientos
+        movs_red = get_all_moves(game.get_board(), RED)
+        if movs_red == []:
+            pyautogui.alert(text="Las fichas AZULES ganan",title="Ganador",button="OK")
+
 
         if game.winner() != None:
             if game.winner() == BLUE:
