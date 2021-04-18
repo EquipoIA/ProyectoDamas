@@ -4,28 +4,28 @@ import pygame
 RED = (255,0,0)
 BLUE = (60, 39, 173)
 
-def heuristica(tablero, jugador):
+def heuristica(tablero, jugador): #Darle valor a cada tablero según su estado 
         valor = 0
         for i in range(8):
             for j in range(8):
                 pos = tablero.get_piece(i,j)
                 if pos != 0:
-                    if pos.color == jugador:
+                    if pos.color == jugador:#Si la ficha es del color del jugador en turno suma  
                         if pos.king:
-                            valor += 2
+                            valor += 2 #rey suma 2
                         else:
-                            valor += 1
+                            valor += 1 #ficha normal suma 1
                     else:
                         if pos.king:
-                            valor -= 2
+                            valor -= 2 #rey enemigo resta 2 
                         else:
-                            valor -= 1
+                            valor -= 1 #ficha enemiga resta 1 
                     if pos.color == RED:
                         if j<=4:
-                            valor += 0.5
+                            valor += 0.5 #verificamos si la ficha está en la mitad del rival 
                     else:
                         if j>=3:
-                            valor += 0.5
+                            valor += 0.5 #verificamos si la ficha esta en la mitad del rival 
         return valor
 
 def minimaxRed(position, depth, max_player,alpha,beta, game):
