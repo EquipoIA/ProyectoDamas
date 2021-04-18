@@ -41,15 +41,15 @@ class Board:
         for row in range(ROWS):
             self.board.append([])
             for col in range(COLS):
-                if col % 2 == ((row +  1) % 2):
+                if col % 2 == ((row +  1) % 2): #revisamos que la posición sea donde va una ficha 
                     if row < 3:
-                        self.board[row].append(Piece(row, col, BLUE))
+                        self.board[row].append(Piece(row, col, BLUE))#si la fila es menor a 3 añadimos una ficha roja 
                     elif row > 4:
-                        self.board[row].append(Piece(row, col, RED))
+                        self.board[row].append(Piece(row, col, RED)) #si la fila es mayor a 3 añadimos una ficha azul 
                     else:
-                        self.board[row].append(0)
+                        self.board[row].append(0) #añadimos espacios vacios en la parte media del tablero 
                 else:
-                    self.board[row].append(0)
+                    self.board[row].append(0) #añadimos espacios vacíos en todas las posiciones entre las fichas
         
     def draw(self, win):
         self.draw_squares(win)
