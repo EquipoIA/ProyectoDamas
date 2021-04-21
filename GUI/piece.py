@@ -6,7 +6,7 @@ class Piece:
     OUTLINE = 2
 
     def __init__(self, row, col, color):
-        self.row = row
+        self.row = row 
         self.col = col
         self.color = color
         self.king = False

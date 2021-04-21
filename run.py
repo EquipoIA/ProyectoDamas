@@ -3,7 +3,6 @@ import pyautogui
 
 from GUI.constants import *
 from GUI.game import Game
-from IA.IA import *
 from minimax.algorithm import *
 FPS = 60
 
@@ -26,9 +25,9 @@ def main():
     if eleccion == "Fácil":
         nivelProfundidad = 2
     elif eleccion == "Medio":
-        nivelProfundidad = 3
-    else: 
         nivelProfundidad = 4
+    else: 
+        nivelProfundidad = 6
 
     print(nivelProfundidad)
 
@@ -36,17 +35,20 @@ def main():
         clock.tick(FPS)
 
         if game.turn == BLUE:
-            #value, new_board = negamax(game.get_board(), 4, BLUE,-10000,10000, game) 
             value, new_board = minimaxBlue(game.get_board(), nivelProfundidad, BLUE,float('-inf'),float('inf'))
             if new_board != None:
                 game.ai_move(new_board)
             else:
-                pyautogui.alert(text="Las fichas ROJAS ganan",title="Ganador",button="OK")
-
-        #elif game.turn == RED:
-        #   value, new_board = minimaxRed(game.get_board(), 3, RED,float('-inf'),float('inf'), game)
-        #   game.ai_move(new_board)
-
+                pyautogui.alert(text="Las fichas Azules no tienen movimientos posibles",title="Ganador",button="OK")
+                break
+        
+        ####################
+        '''
+        elif game.turn == RED:
+           value, new_board = minimaxRed(game.get_board(), 2, RED,float('-inf'),float('inf'))
+           game.ai_move(new_board)
+        '''
+        ####################
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -58,18 +60,19 @@ def main():
 
         game.update()
 
-        #checar si red se quedo sin movimientos
-        movs_red = get_all_moves(game.get_board(), RED)
-        if movs_red == []:
-            pyautogui.alert(text="Las fichas AZULES ganan",title="Ganador",button="OK")
-
-
         if game.winner() != None:
             if game.winner() == BLUE:
                 pyautogui.alert(text="Las fichas AZULES ganan",title="Ganador",button="OK")
+                break
             else:
                 pyautogui.alert(text="Las fichas ROJAS ganan",title="Ganador",button="OK")
+                break
             run = False
+        #checar si red se quedo sin movimientos
+        movs_red = get_all_moves(game.get_board(), RED)
+        if movs_red == []:
+            pyautogui.alert(text="Las fichas Rojas no tienen movimientos posibles",title="Ganador",button="OK")
+            break
     
     pygame.quit()
 

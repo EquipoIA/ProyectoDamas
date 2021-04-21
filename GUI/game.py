@@ -6,6 +6,7 @@ class Game:
     def __init__(self, win):
         self._init()
         self.win = win
+        self.numMov = 0
     
     def update(self):
         self.board.draw(self.win)
@@ -63,6 +64,7 @@ class Game:
             self.turn = BLUE     
         else:
             self.turn = RED
+        self.numMov += 1
     def ai_move(self, board):
         self.board = board
         self.change_turn()
