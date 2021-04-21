@@ -60,24 +60,30 @@ def minimaxBlue(position, depth, max_player,alpha,beta):
     
     if max_player:#si estamos buscando maximizar el valor
         best_move = None
+        value = -10000
         for move in get_all_moves(position, BLUE): #recorre los hijos del nodo en el que estamos
             evaluation = minimaxBlue(move, depth-1, False,alpha, beta)[0]
-            if evaluation > alpha:#si el valor del hijo es mayor a alpha, se hace el cambio
+            if evaluation > value:
+                value = evaluation
+            if value > alpha:#si el valor del hijo es mayor a alpha, se hace el cambio
                 alpha = evaluation
                 best_move = move
             if alpha >= beta: #parte que hace el "pruning" de las ramas
-                return alpha, best_move  
-        return alpha,best_move
+                return value, best_move  
+        return value,best_move
     else: #si estamos buscanod minimizar el valor
         best_move = None
+        value = 10000
         for move in get_all_moves(position, RED):#recorre los hijos del nodo en el que estamos
             evaluation = minimaxBlue(move, depth-1, True,alpha,beta)[0]
-            if evaluation < beta: #si el valor es menor a beta, se hace el cambio
+            if evaluation < value:
+                value = evaluation
+            if value < beta: #si el valor es menor a beta, se hace el cambio
                 beta = evaluation
                 best_move = move
             if alpha >= beta:#parte que hace el "pruning" de las ramas
-                return beta,best_move   
-        return beta, best_move
+                return value,best_move   
+        return value, best_move
 
 
 def simulate_move(piece, move, board, skip):
