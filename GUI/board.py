@@ -91,24 +91,24 @@ class Board:
         #print(moves)
         return moves
 
-
+#Checa los moviminetos posibles empezando hacia la izquierda
     def _traverse_left(self, start, stop, step, color, left, skipped=[]):
-        moves = {}
-        last = []
-        for r in range(start, stop, step):
-            if left < 0:
+        moves = {} #diccionario con los movimientos y las piezas que se come en cada uno
+        last = [] #variable que indica si la posicion de antes comimos una pieza
+        for r in range(start, stop, step):#for que checa dos filas hacia arriba o hacia abajo dependiendo el caso
+            if left < 0: #checa si la posicion que queremos checar es valida
                 break
             
             current = self.board[r][left]
-            if current == 0:
-                if skipped and not last:
+            if current == 0:#checa si al posicion a la que nos queremos mover esta vacia
+                if skipped and not last: #si ya habiamos comido alguien, no se puede mover a otro vacio despues
                     break
-                elif skipped:
+                elif skipped:#agrega el movimiento mas las que ya habia comido
                     moves[(r, left)] = last + skipped
-                else:
+                else:#agrega el movimiento (si last es vacia, es que no come a nadie)
                     moves[(r, left)] = last
                 
-                if last:
+                if last: #si ya habiamos comido, hace una llamada recursiva par ver si puede volver a comer
                     if step == -1:
                         row = max(r-3, 0)
                     else:
@@ -116,9 +116,9 @@ class Board:
                     moves.update(self._traverse_left(r+step, row, step, color, left-1,skipped=last))
                     moves.update(self._traverse_right(r+step, row, step, color, left+1,skipped=last))
                 break
-            elif current.color == color:
+            elif current.color == color: #si la ficha es del mismo color, no puede avanzar
                 break
-            else:
+            else: #si es de color distinto, la agrega a las fichas que puede comer
                 last = [current]
 
             left -= 1
