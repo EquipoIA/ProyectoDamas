@@ -15,4 +15,4 @@ LIGHTRED = (255,82,82)
 GREY = (128,128,128)
 GREEN = (181,229,80)
 
-CROWN = pygame.transform.scale(pygame.image.load("GUI/assets/crown.png"),(45,25))
+CROWN = pygame.transform.scale(pygame.image.load("GUI/assets/crown2.png"),(45,25))
