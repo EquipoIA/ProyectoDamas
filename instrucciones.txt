@@ -1,0 +1,3 @@
+Instalar python https://www.python.org/
+En el folder del proyecto, instalar las dependencias con pip install -r dependencies.txt 
+Correr el archivo con python run.py
